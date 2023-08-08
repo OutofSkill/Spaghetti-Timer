@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="manifest" href="manifest.json">
+    <style> 
+        .backround-dark {
+            background-color: #262626;
+        }
+
+        .center {
+            display: flex;
+            justify-content: center;
+        }
+
+        .margin-top {
+            margin-top: 50px;
+        }
+
+        .timer {
+            font-size: 75px;
+            color: #ffffff;
+            font-weight: bold;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .egg-image {
+            max-width: 75%;
+            max-height: 75%;
+        }
+    </style>
+    <script>
+        let alarm = new Audio('data/alarm.mp3');
+        let timerInterval;
+        let timerStarted = false;
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            timer.innerHTML = "09:00"; // Setze die Zeit zurück
+            timerStarted = false;
+
+            // Schalte den Start-Button ein und den Stopp-Button aus
+            document.getElementById("startButton").style.display = "block";
+            document.getElementById("stopButton").style.display = "none";
+        }
+
+        function startTimer() {
+            if (!timerStarted) {
+                let startTime = new Date().getTime();
+                let fiveMinutes = 1000 * 60 * 9;
+                let endTime = startTime + fiveMinutes;
+
+                timerInterval = setInterval(function() {
+                    let timeLeft = endTime - new Date().getTime();
+
+                    if (timeLeft > 0) {
+                        let minutes = Math.floor(timeLeft / (1000 * 60));
+                        let seconds = Math.round((timeLeft / 1000) % 60);
+                        seconds = ('0' + seconds).slice(-2);
+                        if(seconds == 60){
+                            seconds = '00';
+                            minutes = minutes + 1;
+                        } 
+                        let text = '0' + minutes + ":" + seconds;
+                        timer.innerHTML = text;
+                    } else {
+                        alarm.play();
+                        timer.innerHTML = "00:00";
+                    }
+                }, 1000);
+                timerStarted = true;
+
+                // Schalte den Stopp-Button ein und den Start-Button aus
+                document.getElementById("stopButton").style.display = "block";
+                document.getElementById("startButton").style.display = "none";
+            } else {
+                clearInterval(timerInterval);
+                timer.innerHTML = "09:00"; // Setze die Zeit zurück
+                timerStarted = false;
+
+                // Schalte den Start-Button ein und den Stopp-Button aus
+                document.getElementById("startButton").style.display = "block";
+                document.getElementById("stopButton").style.display = "none";
+            }
+        }
+    </script>
+
+</head>
+
+<body class="backround-dark">
+    
+    <div class="center margin-top">
+        <img src="data/egg.png" class="egg-image">
+    </div>
+    
+    <div class="center timer margin-top" id="timer">
+        09:00
+    </div>
+    
+    <div class="center margin-top timer">
+        <img id="startButton" onclick="startTimer()" src="data/button.png" style="max-width: 35%; max-height: 35%;">
+        <img id="stopButton" onclick="stopTimer()" src="data/stop-button.png" style="max-width: 35%; max-height: 35%; display: none;">
+    </div>
+
+</body>
+
+</html>
